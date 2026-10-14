@@ -815,3 +815,31 @@ async def health_check():
         "ffmpeg_path": settings.FFMPEG_PATH,
         "is_pipeline_running": global_state.is_running,
     }
+
+
+# ==============================================================================
+# Automated Daily Scheduler Endpoints
+# ==============================================================================
+
+@app.get("/api/v1/scheduler/status", tags=["Scheduler"])
+async def get_scheduler_telemetry():
+    """Retrieve status of the autonomous daily 2-times publisher (last run, next scheduled run, videos uploaded)."""
+    from ..scheduler import get_scheduler_status
+    return get_scheduler_status()
+
+
+@app.post("/api/v1/scheduler/trigger", tags=["Scheduler"])
+async def trigger_automated_cycle(background_tasks: BackgroundTasks, edition: str = Query("Manual Trigger Edition")):
+    """Trigger an immediate production cycle of the automated news video generation and YouTube publishing."""
+    from ..scheduler import run_news_cycle
+
+    async def _run():
+        await run_news_cycle(edition)
+
+    background_tasks.add_task(_run)
+    return {
+        "status": "started",
+        "edition": edition,
+        "message": "Automated production news cycle initiated in background.",
+    }
+
