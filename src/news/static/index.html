@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NewsIntel // Autonomous AI News Video Generation Network</title>
+  <meta name="description" content="Autonomous multi-agent system generating broadcast-ready news videos with Groq, Gemini, Neural TTS, and FFmpeg.">
+  
+  <!-- Modern Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Ambient background glow effects -->
+  <div class="ambient-glow glow-cyan"></div>
+  <div class="ambient-glow glow-indigo"></div>
+  <div class="ambient-glow glow-amber"></div>
+
+  <div class="app-container">
+    <!-- Navbar -->
+    <header class="navbar">
+      <div class="nav-brand">
+        <div class="brand-symbol">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" stroke-opacity="0.3"></circle>
+            <path d="M12 2a10 10 0 0 1 10 10" stroke="url(#nav-grad)"></path>
+            <polygon points="10,8 16,12 10,16" fill="currentColor"></polygon>
+            <defs>
+              <linearGradient id="nav-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#00f0ff"/>
+                <stop offset="100%" stop-color="#6366f1"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">NEWS<span class="brand-accent">INTEL</span></span>
+          <span class="brand-sub">AI VIDEO BROADCAST NETWORK</span>
+        </div>
+      </div>
+
+      <div class="nav-status-group">
+        <div class="status-pill status-online" id="system-status-pill">
+          <span class="status-dot pulse"></span>
+          <span id="system-status-text">Network Ready</span>
+        </div>
+        <!-- Interactive Model, Language, and Format Controls -->
+        <div class="status-pill pill-tech" style="border-color: rgba(118, 185, 0, 0.5); padding: 4px 10px;">
+          <span class="model-badge" style="background: #76b900; color: #000; font-weight: 800;">NVIDIA</span>
+          <select id="config-model-select" style="background: transparent; color: #e2e8f0; border: none; font-size: 0.8rem; font-weight: 600; cursor: pointer; outline: none;">
+            <option value="black-forest-labs/flux.1-schnell" style="background: #0f172a;">⚡ Turbo (schnell 1.5s)</option>
+            <option value="black-forest-labs/flux.2-klein-4b" selected style="background: #0f172a;">⚖️ Balanced (klein-4b 3.5s)</option>
+            <option value="black-forest-labs/flux.1-dev" style="background: #0f172a;">🎨 Pro (flux.1-dev 7s)</option>
+          </select>
+        </div>
+
+        <div class="status-pill pill-tech" style="border-color: rgba(56, 189, 248, 0.4); padding: 4px 10px;">
+          <span class="model-badge" style="background: #0284c7; color: #fff;">LANG</span>
+          <select id="config-lang-select" style="background: transparent; color: #e2e8f0; border: none; font-size: 0.8rem; font-weight: 600; cursor: pointer; outline: none;">
+            <option value="en" selected style="background: #0f172a;">🌐 English</option>
+            <option value="te" style="background: #0f172a;">🇮🇳 Telugu (తెలుగు)</option>
+            <option value="hi" style="background: #0f172a;">🇮🇳 Hindi (हिन्दी)</option>
+          </select>
+        </div>
+
+        <div class="status-pill pill-tech" style="border-color: rgba(245, 158, 11, 0.4); padding: 4px 10px;">
+          <span class="model-badge" style="background: #d97706; color: #fff;">FORMAT</span>
+          <select id="config-format-select" style="background: transparent; color: #e2e8f0; border: none; font-size: 0.8rem; font-weight: 600; cursor: pointer; outline: none;">
+            <option value="16:9" selected style="background: #0f172a;">16:9 Landscape</option>
+            <option value="9:16" style="background: #0f172a;">9:16 Shorts/Reels</option>
+            <option value="both" style="background: #0f172a;">Dual Export (Both)</option>
+          </select>
+        </div>
+        <div class="nav-clock" id="utc-clock">--:--:-- UTC</div>
+      </div>
+    </header>
+
+    <!-- Hero & Workflow Action Controller -->
+    <section class="hero-control">
+      <div class="hero-content">
+        <div class="hero-tag">
+          <span class="tag-icon">⚡</span>
+          <span>AUTONOMOUS 5-MINUTE YOUTUBE VIDEO PIPELINE</span>
+        </div>
+        <h1 class="hero-title">
+          Real-Time AI <span class="gradient-text">News Video</span> Generation
+        </h1>
+        <p class="hero-desc">
+          Dual-track orchestration curates the <strong>Top 2 World</strong> &amp; <strong>Top 2 India</strong> news stories from the past 24 hours, generating full <strong>5-Minute broadcast videos</strong> (~600–680 words) in <strong>YouTube Standard format</strong> (1920&times;1080, 16:9, H.264, 30 FPS, AAC 48 kHz) with dynamic image transitions every 10 to 15 seconds.
+        </p>
+
+        <div class="hero-actions">
+          <button class="primary-btn real-gen-btn" id="start-real-gen-btn" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 0 25px rgba(16, 185, 129, 0.45); border: 1px solid rgba(52, 211, 153, 0.6);">
+            <span class="btn-icon">🎬</span>
+            <span id="real-gen-btn-text">Real Broadcast Generation</span>
+          </button>
+
+          <button class="primary-btn" id="start-pipeline-btn">
+            <span class="btn-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="5 3 19 12 5 21 5 3" fill="currentColor"></polygon>
+              </svg>
+            </span>
+            <span id="start-btn-text">Start Pipeline</span>
+          </button>
+
+          <button class="secondary-btn" id="refresh-status-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+            </svg>
+            <span>Sync Status</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Agent Telemetry Box -->
+      <div class="pipeline-card" id="pipeline-telemetry">
+        <div class="card-header">
+          <div class="card-title-group">
+            <span class="telemetry-radar"></span>
+            <h3>Multi-Agent Workflow Telemetry</h3>
+          </div>
+          <span class="stage-tag" id="active-stage-label">IDLE</span>
+        </div>
+
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" id="overall-progress-fill" style="width: 0%;"></div>
+        </div>
+        <div class="progress-info-row">
+          <span id="pipeline-status-detail">Awaiting 1-click workflow trigger...</span>
+          <span class="progress-pct" id="overall-progress-text">0%</span>
+        </div>
+
+        <!-- 6-Stage Agent Matrix Grid -->
+        <div class="agent-matrix">
+          <div class="agent-node" id="node-orchestrator">
+            <div class="node-icon">🎛️</div>
+            <div class="node-label">Orchestrator</div>
+            <div class="node-meta">Groq 120B</div>
+          </div>
+          <div class="node-arrow">➜</div>
+          <div class="agent-node" id="node-collector">
+            <div class="node-icon">📰</div>
+            <div class="node-label">News Ranker</div>
+            <div class="node-meta">Gemini 3.7</div>
+          </div>
+          <div class="node-arrow">➜</div>
+          <div class="agent-node" id="node-script-image">
+            <div class="node-icon">✍️ 🖼️</div>
+            <div class="node-label">Script &amp; Image</div>
+            <div class="node-meta">Qwen / FLUX</div>
+          </div>
+          <div class="node-arrow">➜</div>
+          <div class="agent-node" id="node-image-to-video">
+            <div class="node-icon">🎞️</div>
+            <div class="node-label">Image-to-Video</div>
+            <div class="node-meta">MiniMax-H3</div>
+          </div>
+          <div class="node-arrow">➜</div>
+          <div class="agent-node" id="node-voice">
+            <div class="node-icon">🔊</div>
+            <div class="node-label">Neural Voice</div>
+            <div class="node-meta">Neural TTS</div>
+          </div>
+
+          <div class="node-arrow">➜</div>
+          <div class="agent-node" id="node-assembly">
+            <div class="node-icon">🎬</div>
+            <div class="node-label">FFmpeg Assembler</div>
+            <div class="node-meta">1080p / 720p</div>
+          </div>
+          <div class="node-arrow">➜</div>
+          <div class="agent-node" id="node-qc">
+            <div class="node-icon">✅</div>
+            <div class="node-label">Quality Control</div>
+            <div class="node-meta">Groq 20B</div>
+          </div>
+        </div>
+
+        <!-- Console Log Drawer -->
+        <div class="console-box" id="console-box">
+          <div class="console-header">
+            <span>Agent Execution Log Feed</span>
+            <button class="console-clear" id="console-clear-btn">Clear</button>
+          </div>
+          <div class="console-output" id="console-log-output">
+            <div class="log-line log-system">[SYS] NewsIntel multi-agent broadcast network initialized and ready.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Output Video Section -->
+    <main class="broadcast-section">
+      <!-- Section Tabs: World / India / All -->
+      <div class="broadcast-tabs">
+        <button class="nav-tab active" data-target="all">
+          <span>All Broadcasts</span>
+          <span class="tab-badge" id="badge-all">10</span>
+        </button>
+        <button class="nav-tab" data-target="world">
+          <span>🌍 World News</span>
+          <span class="tab-badge" id="badge-world">5</span>
+        </button>
+        <button class="nav-tab" data-target="india">
+          <span>🇮🇳 India News</span>
+          <span class="tab-badge" id="badge-india">5</span>
+        </button>
+      </div>
+
+      <!-- WORLD NEWS PIPELINE CONTAINER -->
+      <div class="region-block" id="world-news-block">
+        <div class="region-header">
+          <div class="region-title-group">
+            <span class="region-flag">🌍</span>
+            <h2>WORLD NEWS <span class="region-sub">// TOP 2 GLOBAL STORIES</span></h2>
+          </div>
+          <span class="source-sub">BBC News &bull; Google News Global &bull; Reuters</span>
+        </div>
+
+        <div class="stories-grid" id="world-stories-grid">
+          <!-- Populated by app.js -->
+          <div class="empty-state">Click "Start AI Video Workflow" to generate World News videos.</div>
+        </div>
+      </div>
+
+      <!-- INDIA NEWS PIPELINE CONTAINER -->
+      <div class="region-block" id="india-news-block">
+        <div class="region-header">
+          <div class="region-title-group">
+            <span class="region-flag">🇮🇳</span>
+            <h2>INDIA NEWS <span class="region-sub">// TOP 2 NATIONAL STORIES</span></h2>
+          </div>
+          <span class="source-sub">The Hindu &bull; NDTV &bull; Google News India</span>
+        </div>
+
+        <div class="stories-grid" id="india-stories-grid">
+          <!-- Populated by app.js -->
+          <div class="empty-state">Click "Start AI Video Workflow" to generate India News videos.</div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-left">
+        NewsIntel &copy; 2026 &bull; Autonomous Multi-Agent AI Video Broadcast Architecture
+      </div>
+      <div class="footer-right">
+        <span>Groq (120B / 20B)</span> &bull; <span>Gemini 3.7 Flash</span> &bull; <span>Neural TTS</span> &bull; <span>FFmpeg 8.1</span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- VIDEO PREVIEW MODAL -->
+  <div class="modal-overlay" id="video-modal" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span class="modal-badge" id="modal-region-badge">WORLD NEWS</span>
+          <h3 id="modal-video-title">News Video Title</h3>
+        </div>
+        <button class="modal-close-btn" id="modal-close-btn">&times;</button>
+      </div>
+
+      <div class="modal-video-container">
+        <video id="modal-video-player" controls preload="auto" playsinline>
+          Your browser does not support the video tag.
+        </video>
+      </div>
+
+      <div class="modal-meta-bar">
+        <div class="meta-left">
+          <span class="qc-pill" id="modal-qc-pill">✅ QC PASSED</span>
+          <span class="meta-duration" id="modal-duration">--s</span>
+          <span class="meta-format" style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-cyan);">1920&times;1080 &bull; 30 FPS &bull; AAC 48kHz</span>
+          <span class="meta-source" id="modal-source">Source: --</span>
+        </div>
+        <div class="meta-right">
+          <a class="download-link-btn" id="modal-download-btn" href="#" download>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>Download 1080p MP4</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Narrative script viewer in modal -->
+      <div class="modal-script-drawer">
+        <div class="drawer-toggle" id="drawer-toggle-btn">
+          <span>View 3-Minute 6-Section Script Format (~330–390 words)</span>
+          <span class="toggle-arrow">▼</span>
+        </div>
+        <div class="drawer-content" id="drawer-script-content" style="display: none;">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- YOUTUBE UPLOAD DETAILS MODAL -->
+  <div class="modal-overlay" id="youtube-details-modal" style="display: none;">
+    <div class="modal-card modal-card-details">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span class="modal-badge">📋 YOUTUBE UPLOAD METADATA</span>
+          <h3 id="yt-modal-title">Story Title</h3>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <button class="btn-upload-yt-modal" id="btn-upload-yt-modal" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; color: #f87171; border-radius: 6px; font-size: 0.8rem; font-weight: 700; cursor: pointer;" title="Upload this video directly to YouTube">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            <span>🚀 YouTube</span>
+          </button>
+          <button class="btn-upload-ig-modal" id="btn-upload-ig-modal" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: rgba(225, 48, 108, 0.2); border: 1px solid #e1306c; color: #f472b6; border-radius: 6px; font-size: 0.8rem; font-weight: 700; cursor: pointer;" title="Upload this video directly to Instagram">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            <span>📸 Instagram</span>
+          </button>
+          <button class="btn-copy-all" id="btn-copy-all" title="Copy entire YouTube metadata bundle">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            <span>Copy All</span>
+          </button>
+          <button class="modal-close-btn" id="yt-details-close-btn">&times;</button>
+        </div>
+      </div>
+
+      <!-- REAL-TIME YOUTUBE UPLOAD PROGRESS BAR -->
+      <div id="yt-modal-upload-bar-wrap" style="display: none; padding: 12px 24px; background: rgba(239, 68, 68, 0.08); border-bottom: 1px solid rgba(239, 68, 68, 0.25);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-family: var(--font-mono); font-size: 0.8rem;">
+          <span id="yt-modal-upload-status-text" style="color: #fca5a5; display: inline-flex; align-items: center; gap: 8px;">
+            <span class="upload-spin" style="display: inline-block; width: 12px; height: 12px; border: 2px solid #ef4444; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite;"></span>
+            <span>Uploading to YouTube...</span>
+          </span>
+          <span id="yt-modal-upload-pct" style="color: #f87171; font-weight: 700; font-size: 0.95rem;">0%</span>
+        </div>
+        <div style="height: 8px; background: rgba(0, 0, 0, 0.5); border-radius: 999px; overflow: hidden; position: relative;">
+          <div id="yt-modal-upload-progress-fill" style="height: 100%; width: 0%; background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981); border-radius: 999px; transition: width 0.3s ease; box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);"></div>
+        </div>
+      </div>
+
+      <!-- Clean Non-Redundant Tab Navigation -->
+      <div class="yt-modal-tabs">
+        <button class="yt-modal-tab active" data-tab="tab-meta-file">
+          <span>📄 Metadata File (metadata.txt)</span>
+        </button>
+        <button class="yt-modal-tab" data-tab="tab-fields">
+          <span>📝 Form Fields</span>
+        </button>
+        <button class="yt-modal-tab" data-tab="tab-json">
+          <span>📦 Raw JSON</span>
+        </button>
+      </div>
+
+      <div class="modal-body-scrollable">
+        <!-- TAB 1: METADATA FILE (RECOMMENDED / DEFAULT) -->
+        <div id="tab-meta-file" class="yt-tab-pane active">
+          <div class="yt-field-group" style="margin-top: 0;">
+            <div class="yt-field-header">
+              <label style="color: #10b981; font-weight: 700;">📄 YOUTUBE METADATA FILE (metadata.txt)</label>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn-copy-field" id="btn-copy-file" data-target="yt-file-block" style="background: rgba(16, 185, 129, 0.2); border-color: #10b981; color: #10b981;">📋 Copy File</button>
+                <a class="download-link-btn" id="btn-download-meta-file" href="#" download style="font-size: 0.75rem; padding: 4px 10px; background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; color: #10b981; text-decoration: none; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px;">⬇️ Download metadata.txt</a>
+              </div>
+            </div>
+            <textarea id="yt-file-block" class="yt-textarea yt-file-box" rows="18" readonly style="font-family: 'Consolas', 'Courier New', monospace; font-size: 13px; background: #071013; color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; line-height: 1.6; padding: 14px; white-space: pre-wrap;"></textarea>
+          </div>
+        </div>
+
+        <!-- TAB 2: FIELD-BY-FIELD VIEW -->
+        <div id="tab-fields" class="yt-tab-pane">
+          <!-- Title field -->
+          <div class="yt-field-group">
+            <div class="yt-field-header">
+              <label>TITLE</label>
+              <button class="btn-copy-field" data-target="yt-input-title">Copy Title</button>
+            </div>
+            <input type="text" id="yt-input-title" class="yt-input-text" readonly>
+          </div>
+
+          <!-- Description field -->
+          <div class="yt-field-group">
+            <div class="yt-field-header">
+              <label>DESCRIPTION</label>
+              <button class="btn-copy-field" data-target="yt-textarea-desc">Copy Description</button>
+            </div>
+            <textarea id="yt-textarea-desc" class="yt-textarea" rows="8" readonly></textarea>
+          </div>
+
+          <!-- Tags field -->
+          <div class="yt-field-group">
+            <div class="yt-field-header">
+              <label>TAGS <span id="yt-tags-count" class="badge-counter">(28 tags)</span></label>
+              <button class="btn-copy-field" data-target="yt-input-tags">Copy Tags</button>
+            </div>
+            <textarea id="yt-input-tags" class="yt-textarea yt-tags-box" rows="3" readonly></textarea>
+            <div class="yt-tag-chips" id="yt-tag-chips"></div>
+          </div>
+
+          <!-- Key Settings Grid -->
+          <div class="yt-meta-grid">
+            <div class="yt-meta-card">
+              <div class="meta-label">MADE FOR KIDS</div>
+              <div class="meta-val" id="yt-meta-kids" style="color: #ef4444;">false</div>
+              <button class="btn-copy-field btn-copy-mini" data-copy-text="false">Copy</button>
+            </div>
+            <div class="yt-meta-card">
+              <div class="meta-label">CATEGORY</div>
+              <div class="meta-val" id="yt-meta-category">News &amp; Politics</div>
+              <button class="btn-copy-field btn-copy-mini" data-copy-text="News & Politics">Copy</button>
+            </div>
+            <div class="yt-meta-card">
+              <div class="meta-label">VISIBILITY</div>
+              <div class="meta-val" id="yt-meta-visibility" style="color: #10b981;">public</div>
+              <button class="btn-copy-field btn-copy-mini" data-copy-text="public">Copy</button>
+            </div>
+            <div class="yt-meta-card">
+              <div class="meta-label">SCHEDULE DATE</div>
+              <div class="meta-val" id="yt-meta-sched-date">2026-09-28</div>
+              <button class="btn-copy-field btn-copy-mini" id="btn-copy-sched-date">Copy</button>
+            </div>
+            <div class="yt-meta-card">
+              <div class="meta-label">SCHEDULE TIME</div>
+              <div class="meta-val" id="yt-meta-sched-time">Immediate</div>
+              <button class="btn-copy-field btn-copy-mini" id="btn-copy-sched-time">Copy</button>
+            </div>
+            <div class="yt-meta-card">
+              <div class="meta-label">LANGUAGE</div>
+              <div class="meta-val" id="yt-meta-language">English</div>
+              <button class="btn-copy-field btn-copy-mini" id="btn-copy-lang">Copy</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: JSON FORMAT -->
+        <div id="tab-json" class="yt-tab-pane">
+          <div class="yt-field-group" style="margin-top: 0;">
+            <div class="yt-field-header">
+              <label style="color: #38bdf8; font-weight: 700;">📦 YOUTUBE UPLOAD METADATA JSON (READY TO COPY)</label>
+              <button class="btn-copy-field" id="btn-copy-json" data-target="yt-json-block" style="background: rgba(56, 189, 248, 0.2); border-color: #38bdf8; color: #38bdf8;">📋 Copy JSON</button>
+            </div>
+            <textarea id="yt-json-block" class="yt-textarea yt-json-box" rows="16" readonly style="font-family: 'Consolas', 'Courier New', monospace; font-size: 13px; background: #070d18; color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; line-height: 1.5; padding: 14px;"></textarea>
+          </div>
+        </div>
+  <!-- ======================================================================= -->
+  <!-- SLIDE INSPECTOR MODAL (10-15s Slide Visual & Script Quality Control) -->
+  <!-- ======================================================================= -->
+  <div class="modal-overlay" id="slides-modal" style="display:none;position:fixed;inset:0;background:rgba(2,6,23,0.85);backdrop-filter:blur(10px);z-index:9999;overflow-y:auto;padding:30px 20px;">
+    <div class="modal-container" style="max-width:1100px;margin:0 auto;background:#0b1329;border:1px solid rgba(59,130,246,0.35);border-radius:16px;box-shadow:0 25px 60px rgba(0,0,0,0.8);overflow:hidden;">
+      <div class="modal-header" style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid rgba(255,255,255,0.08);background:linear-gradient(90deg,rgba(15,23,42,0.9),rgba(30,58,138,0.3));">
+        <div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:1.4rem;">🖼️</span>
+            <h2 id="slides-modal-title" style="font-size:1.15rem;font-weight:700;color:#f8fafc;margin:0;">Story Slide Inspection</h2>
+          </div>
+          <div style="font-size:0.8rem;color:#94a3b8;margin-top:4px;">10-15s Broadcast Beat Breakdown &bull; NVIDIA AI Imagery &bull; Zero Outside Products Guaranteed</div>
+        </div>
+        <button id="slides-modal-close-btn" style="background:transparent;border:none;color:#94a3b8;font-size:1.6rem;cursor:pointer;padding:4px 8px;border-radius:6px;transition:all 0.2s;">&times;</button>
+      </div>
+      <div id="slides-modal-body" style="padding:24px;max-height:calc(85vh - 120px);overflow-y:auto;">
+        <div id="slides-grid-container" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px;">
+          <!-- Slide cards loaded dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================= -->
+  <!-- A/B THUMBNAILS MODAL -->
+  <!-- ======================================================================= -->
+  <div class="modal-overlay" id="thumbnails-modal" style="display:none;position:fixed;inset:0;background:rgba(2,6,23,0.85);backdrop-filter:blur(10px);z-index:9999;overflow-y:auto;padding:30px 20px;">
+    <div class="modal-container" style="max-width:1050px;margin:0 auto;background:#0b1329;border:1px solid rgba(245,158,11,0.4);border-radius:16px;box-shadow:0 25px 60px rgba(0,0,0,0.8);overflow:hidden;">
+      <div class="modal-header" style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid rgba(255,255,255,0.08);background:linear-gradient(90deg,rgba(15,23,42,0.9),rgba(217,119,6,0.25));">
+        <div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:1.4rem;">🎨</span>
+            <h2 id="thumbnails-modal-title" style="font-size:1.15rem;font-weight:700;color:#f8fafc;margin:0;">High-CTR A/B Thumbnails (1280&times;720)</h2>
+          </div>
+          <div style="font-size:0.8rem;color:#94a3b8;margin-top:4px;">Compare two distinct mobile-optimized designs to maximize click-through rate.</div>
+        </div>
+        <button id="thumbnails-modal-close-btn" style="background:transparent;border:none;color:#94a3b8;font-size:1.6rem;cursor:pointer;padding:4px 8px;border-radius:6px;transition:all 0.2s;">&times;</button>
+      </div>
+      <div style="padding:24px;display:grid;grid-template-columns:1fr 1fr;gap:24px;" id="thumbnails-modal-body">
+        <!-- Option A -->
+        <div style="background:#0f172a;border:1px solid rgba(239,68,68,0.4);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;">
+          <div style="padding:12px 16px;background:rgba(239,68,68,0.15);font-weight:700;color:#f87171;font-size:0.85rem;display:flex;justify-content:space-between;">
+            <span>OPTION A: BREAKING NEWS RED</span>
+            <span style="font-family:monospace;">1280&times;720</span>
+          </div>
+          <div style="aspect-ratio:16/9;background:#020617;display:flex;align-items:center;justify-content:center;">
+            <img id="thumb-a-img" src="" alt="Thumbnail Option A" style="width:100%;height:100%;object-fit:cover;">
+          </div>
+          <div style="padding:14px;display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:0.75rem;color:#94a3b8;">High-contrast red pill badge + gold text</span>
+            <a id="thumb-a-download" href="#" download="thumbnail_a.jpg" class="download-link-btn" style="padding:6px 12px;font-size:0.8rem;background:rgba(239,68,68,0.2);border:1px solid #ef4444;color:#f87171;text-decoration:none;border-radius:6px;font-weight:600;">⬇️ Download Option A</a>
+          </div>
+        </div>
+        <!-- Option B -->
+        <div style="background:#0f172a;border:1px solid rgba(245,158,11,0.4);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;">
+          <div style="padding:12px 16px;background:rgba(245,158,11,0.15);font-weight:700;color:#fbbf24;font-size:0.85rem;display:flex;justify-content:space-between;">
+            <span>OPTION B: SPECIAL REPORT AMBER/CYAN</span>
+            <span style="font-family:monospace;">1280&times;720</span>
+          </div>
+          <div style="aspect-ratio:16/9;background:#020617;display:flex;align-items:center;justify-content:center;">
+            <img id="thumb-b-img" src="" alt="Thumbnail Option B" style="width:100%;height:100%;object-fit:cover;">
+          </div>
+          <div style="padding:14px;display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:0.75rem;color:#94a3b8;">High-voltage amber badge + dual hook</span>
+            <a id="thumb-b-download" href="#" download="thumbnail_b.jpg" class="download-link-btn" style="padding:6px 12px;font-size:0.8rem;background:rgba(245,158,11,0.2);border:1px solid #f59e0b;color:#fbbf24;text-decoration:none;border-radius:6px;font-weight:600;">⬇️ Download Option B</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================= -->
+  <!-- 9:16 VERTICAL VIDEO (SHORTS / REELS) MODAL -->
+  <!-- ======================================================================= -->
+  <div class="modal-overlay" id="vertical-modal" style="display:none;position:fixed;inset:0;background:rgba(2,6,23,0.85);backdrop-filter:blur(10px);z-index:9999;overflow-y:auto;padding:30px 20px;">
+    <div class="modal-container" style="max-width:480px;margin:0 auto;background:#0b1329;border:1px solid rgba(16,185,129,0.4);border-radius:16px;box-shadow:0 25px 60px rgba(0,0,0,0.8);overflow:hidden;">
+      <div class="modal-header" style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.08);background:linear-gradient(90deg,rgba(15,23,42,0.9),rgba(16,185,129,0.2));">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:1.3rem;">📱</span>
+            <h3 id="vertical-modal-title" style="font-size:1.05rem;font-weight:700;color:#f8fafc;margin:0;">9:16 YouTube Shorts / Reels</h3>
+          </div>
+          <div style="font-size:0.75rem;color:#94a3b8;margin-top:2px;">1080&times;1920 Full HD &bull; Portrait Format</div>
+        </div>
+        <button id="vertical-modal-close-btn" style="background:transparent;border:none;color:#94a3b8;font-size:1.6rem;cursor:pointer;padding:4px 8px;border-radius:6px;">&times;</button>
+      </div>
+      <div style="padding:16px;display:flex;flex-direction:column;align-items:center;">
+        <div style="width:100%;max-width:320px;aspect-ratio:9/16;background:#000;border-radius:12px;overflow:hidden;box-shadow:0 15px 35px rgba(0,0,0,0.8);">
+          <video id="vertical-video-player" controls preload="auto" playsinline style="width:100%;height:100%;object-fit:cover;">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+        <div style="margin-top:16px;width:100%;display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:0.75rem;color:#64748b;">Ready for YouTube Shorts, IG Reels &amp; TikTok</span>
+          <a id="vertical-download-btn" href="#" download class="download-link-btn" style="padding:8px 14px;background:#10b981;color:#000;font-weight:700;border-radius:8px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+            <span>⬇️ Download 9:16 MP4</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================= -->
+  <!-- YOUTUBE COMMUNITY POST & PINNED COMMENT MODAL -->
+  <!-- ======================================================================= -->
+  <div class="modal-overlay" id="community-modal" style="display:none;position:fixed;inset:0;background:rgba(2,6,23,0.85);backdrop-filter:blur(10px);z-index:9999;overflow-y:auto;padding:30px 20px;">
+    <div class="modal-container" style="max-width:750px;margin:0 auto;background:#0b1329;border:1px solid rgba(56,189,248,0.4);border-radius:16px;box-shadow:0 25px 60px rgba(0,0,0,0.8);overflow:hidden;">
+      <div class="modal-header" style="display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid rgba(255,255,255,0.08);background:linear-gradient(90deg,rgba(15,23,42,0.9),rgba(56,189,248,0.2));">
+        <div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:1.4rem;">📢</span>
+            <h2 id="community-modal-title" style="font-size:1.15rem;font-weight:700;color:#f8fafc;margin:0;">YouTube Community Post &amp; Pinned Comment</h2>
+          </div>
+          <div style="font-size:0.8rem;color:#94a3b8;margin-top:4px;">Interactive audience discussion poll &bull; Verified fact-check &amp; timestamps</div>
+        </div>
+        <button id="community-modal-close-btn" style="background:transparent;border:none;color:#94a3b8;font-size:1.6rem;cursor:pointer;padding:4px 8px;border-radius:6px;">&times;</button>
+      </div>
+      <div style="padding:24px;display:flex;flex-direction:column;gap:20px;">
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <label style="color:#38bdf8;font-weight:700;font-size:0.85rem;">💬 YOUTUBE COMMUNITY POST (WITH POLL)</label>
+            <button class="btn-copy-field" id="copy-community-post-btn" style="background:rgba(56,189,248,0.2);border:1px solid #38bdf8;color:#38bdf8;padding:4px 10px;border-radius:6px;cursor:pointer;">📋 Copy Post</button>
+          </div>
+          <textarea id="community-post-text" rows="8" readonly style="width:100%;font-family:monospace;font-size:13px;background:#070d18;color:#e2e8f0;border:1px solid rgba(56,189,248,0.3);border-radius:8px;padding:12px;line-height:1.5;"></textarea>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <label style="color:#f59e0b;font-weight:700;font-size:0.85rem;">📌 PINNED COMMENT (FACT-CHECK &amp; TIMESTAMPS)</label>
+            <button class="btn-copy-field" id="copy-pinned-comment-btn" style="background:rgba(245,158,11,0.2);border:1px solid #f59e0b;color:#f59e0b;padding:4px 10px;border-radius:6px;cursor:pointer;">📋 Copy Comment</button>
+          </div>
+          <textarea id="pinned-comment-text" rows="8" readonly style="width:100%;font-family:monospace;font-size:13px;background:#070d18;color:#e2e8f0;border:1px solid rgba(245,158,11,0.3);border-radius:8px;padding:12px;line-height:1.5;"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

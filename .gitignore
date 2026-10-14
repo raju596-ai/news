@@ -1,0 +1,31 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Environment variables & secrets
+.env
+.env.*
+data/token.json
+data/client_secret.json
+data/meta_credentials.json
+
+# Generated media and storage
+storage/
+data/*_normalized.mp4
+
+# Logs
+*.log
+scheduler.log
+
+# IDE & OS
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
